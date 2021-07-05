@@ -31,11 +31,9 @@ export default class {
 
   handleClickIconEye = (icon) => {
     const billUrl = icon.getAttribute("data-bill-url")
-    console.log(billUrl)
 
-    if (billUrl === null) {
-      console.log('test')
-      $('#modaleFile').find(".modal-body").html(`<p style='text-align: center;'>Aucun justificatif></p>`)
+    if (billUrl === 'null') {
+      $('#modaleFile').find(".modal-body").html(`<p style='text-align: center;'>Aucun justificatif fourni</p>`)
       $('#modaleFile').modal('show')
   
     } else {
@@ -54,12 +52,43 @@ export default class {
       .get()
       .then(snapshot => {
         const bills = snapshot.docs
+        // console.log(bills)
           .map(doc => {
             try {
-              return {
-                ...doc.data(),
-                date: formatDate(doc.data().date),
-                status: formatStatus(doc.data().status)
+              let dateStr = doc.data().date
+              let goodDate = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/
+              let wrongDate = /^[0-9]{2}(-|\/)[0-9]{2}(-|\/)[0-9]{4}$/
+              // console.log(doc.data())--MAILS ?
+              
+              if (goodDate.test(dateStr)) {
+                dateStr = doc.data().date
+                return {
+                  ...doc.data(),
+                  date: formatDate(dateStr),
+                  status: formatStatus(doc.data().status)
+                } 
+              } 
+              if (wrongDate.test(dateStr)) {
+                let dateArray
+                if (dateStr.includes('/')) {
+                  dateArray = dateStr.split('/')
+                } else {
+                  dateArray = dateStr.split('-')
+                }
+                let goodArray = dateArray.reverse()
+                dateStr = goodArray.join('-')
+                return {
+                  ...doc.data(),
+                  date: formatDate(dateStr),
+                  status: formatStatus(doc.data().status)
+                } 
+              } else {
+                console.log('NOOOON !!!' + dateStr )
+                return {
+                  ...doc.data(),
+                  date: 'unformatted date',
+                  status: formatStatus(doc.data().status)
+                }
               }
             } catch(e) {
               // if for some reason, corrupted data was introduced, we manage here failing formatDate function
@@ -67,7 +96,7 @@ export default class {
               console.log(e,'for',doc.data())
               return {
                 ...doc.data(),
-                date: doc.data().date,
+                date: 'unformatted date',
                 status: formatStatus(doc.data().status)
               }
             }
@@ -80,8 +109,3 @@ export default class {
     }
   }
 }
-
-
-// function getFileName(str) {
-//   return str.substring(str.lastIndexOf('/')+1)
-// }

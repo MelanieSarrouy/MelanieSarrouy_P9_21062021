@@ -10,8 +10,8 @@
 
 .col-half-row {
   display:flex;
-  width: 75%;
-  margin-left: 20px;
+  /* width: 75%;
+  margin-left: 20px; */
   margin-top: 16px;
 }
 
