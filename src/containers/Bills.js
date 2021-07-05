@@ -7,26 +7,43 @@ export default class {
     this.document = document
     this.onNavigate = onNavigate
     this.firestore = firestore
+    this.localStorage = localStorage
     const buttonNewBill = document.querySelector(`button[data-testid="btn-new-bill"]`)
-    if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)
+    if (buttonNewBill) {
+      buttonNewBill.addEventListener('click', this.handleClickNewBill)
+    } 
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
-    if (iconEye) iconEye.forEach(icon => {
-      icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
-    })
+    if (iconEye) {
+      iconEye.forEach(icon => {
+        icon.addEventListener('click', (e) => {
+          e.preventDefault()
+          this.handleClickIconEye(icon)
+        })
+      })
+    } 
     new Logout({ document, localStorage, onNavigate })
   }
 
   handleClickNewBill = e => {
+    e.preventDefault()
     this.onNavigate(ROUTES_PATH['NewBill'])
   }
 
   handleClickIconEye = (icon) => {
     const billUrl = icon.getAttribute("data-bill-url")
-    const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
-    $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} /></div>`)
-    $('#modaleFile').modal('show')
-  }
+    console.log(billUrl)
 
+    if (billUrl === null) {
+      console.log('test')
+      $('#modaleFile').find(".modal-body").html(`<p style='text-align: center;'>Aucun justificatif></p>`)
+      $('#modaleFile').modal('show')
+  
+    } else {
+      const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
+      $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} /></div>`)
+      $('#modaleFile').modal('show')
+    }
+  }
   // not need to cover this function by tests
   getBills = () => {
     const userEmail = localStorage.getItem('user') ?
@@ -63,3 +80,8 @@ export default class {
     }
   }
 }
+
+
+// function getFileName(str) {
+//   return str.substring(str.lastIndexOf('/')+1)
+// }
