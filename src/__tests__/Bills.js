@@ -12,11 +12,15 @@ describe("Given I am connected as an employee", () => {
     test("Then bills should be ordered from earliest to latest", () => {
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
-      const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
-      
-      const antiChrono = (a, b) => ((a < b) ? 1 : (a == b) ? 0 : -1)
-      const datesSorted = [...dates].sort(antiChrono)
+      // const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
+      const dates = Array.from(document.querySelectorAll('.dates')).map(a => a.innerHTML)
+      const datesSorted = [...dates].sort(tri)
       expect(dates).toEqual(datesSorted)
     })
   })
 })
+function tri(a,b) {
+  let dateA = new Date(a)
+  let dateB = new Date(b)
+  return ((dateA < dateB) ? -1 : (dateA == dateB) ? 0 : 1)
+}

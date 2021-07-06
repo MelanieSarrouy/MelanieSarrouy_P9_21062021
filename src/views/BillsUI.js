@@ -1,26 +1,34 @@
 import VerticalLayout from './VerticalLayout.js'
-import ErrorPage from "./ErrorPage.js"
-import LoadingPage from "./LoadingPage.js"
-
+import ErrorPage from './ErrorPage.js'
+import LoadingPage from './LoadingPage.js'
 import Actions from './Actions.js'
+import { formatDate, formatStatus } from '../app/format.js'
 
 const row = (bill) => {
   return (`
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
-      <td>${bill.date}</td>
+      <td class='dates'>${formatDate(bill.date)}</td>
       <td>${bill.amount} €</td>
-      <td>${bill.status}</td>
-      <td>
-        ${Actions(bill.fileUrl)}
-      </td>
+      <td>${formatStatus(bill.status)}</td>
+      <td>${Actions(bill.fileUrl)}</td>
     </tr>
     `)
   }
 
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  if (data && data.length) {
+    data.sort(tri)
+    return data.map(bill => row(bill)).join("")
+  } else {
+    return ''
+  }
+}
+function tri(a,b) {
+  let dateA = new Date(a.date)
+  let dateB = new Date(b.date)
+  return ((dateA < dateB) ? 1 : (dateA == dateB) ? 0 : -1)
 }
 
 export default ({ data: bills, loading, error }) => {
