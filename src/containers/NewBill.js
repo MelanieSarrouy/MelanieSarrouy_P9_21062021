@@ -8,45 +8,71 @@ export default class NewBill {
     this.onNavigate = onNavigate
     this.firestore = firestore
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
-    formNewBill.addEventListener("submit", this.handleSubmit)
+    formNewBill.addEventListener("submit", (e) => this.handleSubmit(e))
     const file = this.document.querySelector(`input[data-testid="file"]`)
-    file.addEventListener("change", this.handleChangeFile)
+    file.addEventListener("change", (e) => this.handleChangeFile(e))
     this.fileUrl = null
     this.fileName = null
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length-1]
+    console.log(file)
+    const fileName = file.name
+    const fileType = file.type
+    const divInput = this.document.getElementById('input-file')
+    const theLast = this.document.getElementById('fileError');
+    if (theLast !== null) theLast.remove();
+    const extensions = /(jpg|jpeg|png)$/i; 
+
     this.firestore
-      .storage
-      .ref(`justificatifs/${fileName}`)
-      .put(file)
-      .then(snapshot => snapshot.ref.getDownloadURL())
-      .then(url => {
-        this.fileUrl = url
-        this.fileName = fileName
-      })
+    .storage
+    .ref(`justificatifs/${fileName}`)
+    .put(file)
+    .then(snapshot => snapshot.ref.getDownloadURL())
+    .then(url => {
+      this.fileUrl = url
+      this.fileName = fileName
+    })
+
+
+    if (extensions.exec(fileType)) { 
+      console.log('Format de fichier valide');
+      return true
+    } else { 
+      console.log('Format de fichier non valide'); 
+      const para = this.document.createElement('p')
+      para.id = 'fileError'
+      para.style.color ='red'
+      divInput.append(para)
+      para.innerHTML = 'format de fichier non valide</br>Accepté : jpeg, jpeg ou png'
+      return false; 
+    } 
   }
   handleSubmit = e => {
     e.preventDefault()
-    const email = JSON.parse(localStorage.getItem("user")).email
-    const bill = {
-      email,
-      type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
-      name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
-      amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
-      date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
-      vat: e.target.querySelector(`input[data-testid="vat"]`).value,
-      pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
-      commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
-      fileUrl: this.fileUrl,
-      fileName: this.fileName,
-      status: 'pending'
+    if (this.handleChangeFile) {
+      console.log(this.firestore)
+      const email = JSON.parse(localStorage.getItem("user")).email
+      const bill = {
+        email,
+        type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
+        name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
+        amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
+        date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
+        vat: e.target.querySelector(`input[data-testid="vat"]`).value,
+        pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
+        commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
+        fileUrl: this.fileUrl,
+        fileName: this.fileName,
+        status: 'pending'
+      }
+      this.createBill(bill)
+      // this.onNavigate(ROUTES_PATH['Bills'])
+  
+    } else {
+      return false
     }
-    this.createBill(bill)
-    this.onNavigate(ROUTES_PATH['Bills'])
   }
 
   // not need to cover this function by tests
