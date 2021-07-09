@@ -37,10 +37,8 @@ export default class NewBill {
 
 
     if (extensions.exec(fileType)) { 
-      console.log('Format de fichier valide');
       return true
     } else { 
-      console.log('Format de fichier non valide'); 
       const para = this.document.createElement('p')
       para.id = 'fileError'
       para.style.color ='red'
@@ -52,7 +50,6 @@ export default class NewBill {
   handleSubmit = e => {
     e.preventDefault()
     if (this.handleChangeFile) {
-      console.log(this.firestore)
       const email = JSON.parse(localStorage.getItem("user")).email
       const bill = {
         email,
