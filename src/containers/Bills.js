@@ -1,6 +1,7 @@
 import { ROUTES_PATH } from '../constants/routes.js'
-// import { formatDate, formatStatus } from "../app/format.js"
 import Logout from "./Logout.js"
+import BigBilledIcon from '../assets/svg/big_billed.js'
+
 
 export default class Bills {
   constructor({ document, onNavigate, firestore, localStorage }) {
@@ -32,15 +33,17 @@ export default class Bills {
   handleClickIconEye = (icon) => {
     const billUrl = icon.getAttribute("data-bill-url")
 
-    if (billUrl === 'null') {
-      $('#modaleFile').find(".modal-body").html(`<p style='text-align: center;'>Aucun justificatif fourni</p>`)
-      $('#modaleFile').modal('show')
+    // if (billUrl === 'null') {
+    //   $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'>${BigBilledIcon}<p>Aucun justificatif fourni</p></div>`)
+    //   $('#modaleFile').modal('show')
   
-    } else {
+    // } else {
       const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
-      $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} /></div>`)
-      $('#modaleFile').modal('show')
-    }
+      // $(document).ready(function(){
+        $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} /></div>`)
+        $('#modaleFile').modal('show')
+      // })
+    // }
   }
   // not need to cover this function by tests
   getBills = () => {
@@ -52,14 +55,8 @@ export default class Bills {
       .get()
       .then(snapshot => {
         const bills = snapshot.docs
-          .map(doc => {
-              return {
-                ...doc.data()
-              }
-            } 
-          )
+          .map(doc => {return {...doc.data()}})
           .filter(bill => bill.email === userEmail)
-          console.log('length', bills.length)
         return bills
       })
       .catch(error => error)
