@@ -16,35 +16,29 @@ export default class Bills {
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
     if (iconEye) {
       iconEye.forEach(icon => {
-        icon.addEventListener('click', (e) => {
-          e.preventDefault()
-          this.handleClickIconEye(icon)
-        })
+        icon.addEventListener('click', () => this.handleClickIconEye(icon))
       })
     } 
     new Logout({ document, localStorage, onNavigate })
   }
 
-  handleClickNewBill = e => {
+  handleClickNewBill = (e) => {
     e.preventDefault()
     this.onNavigate(ROUTES_PATH['NewBill'])
   }
 
   handleClickIconEye = (icon) => {
     const billUrl = icon.getAttribute("data-bill-url")
-
-    // if (billUrl === 'null') {
-    //   $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'>${BigBilledIcon}<p>Aucun justificatif fourni</p></div>`)
-    //   $('#modaleFile').modal('show')
-  
-    // } else {
+    if (billUrl === 'null') {
+      $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'>${BigBilledIcon}<p>Aucun justificatif fourni</p></div>`)
+      $('#modaleFile').modal('show')
+    } else {
       const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
-      // $(document).ready(function(){
-        $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} /></div>`)
-        $('#modaleFile').modal('show')
-      // })
-    // }
+      $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} /></div>`)
+      $('#modaleFile').modal('show')
+    }
   }
+
   // not need to cover this function by tests
   getBills = () => {
     const userEmail = localStorage.getItem('user') ?

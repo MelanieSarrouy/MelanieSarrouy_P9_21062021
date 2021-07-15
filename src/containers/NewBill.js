@@ -16,15 +16,15 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
+    e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    console.log(file)
+    console.log(file.name)
     const fileName = file.name
     const fileType = file.type
     const divInput = this.document.getElementById('input-file')
     const theLast = this.document.getElementById('fileError');
     if (theLast !== null) theLast.remove();
     const extensions = /(jpg|jpeg|png)$/i; 
-
     this.firestore
     .storage
     .ref(`justificatifs/${fileName}`)
@@ -34,7 +34,7 @@ export default class NewBill {
       this.fileUrl = url
       this.fileName = fileName
     })
-
+    console.log(this.firestore.storage)
 
     if (extensions.exec(fileType)) { 
       return true
