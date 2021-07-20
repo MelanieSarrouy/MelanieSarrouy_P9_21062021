@@ -54,6 +54,7 @@ export default class Login {
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   checkIfUserExists = (user) => {
     if (this.firestore) {
       this.firestore
@@ -61,7 +62,7 @@ export default class Login {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          console.log(`User with ${user.email} exists`)
+          // console.log(`User with ${user.email} exists`)
           return true
         } else {
           return false
@@ -74,6 +75,7 @@ export default class Login {
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   createUser = (user) => {
     if (this.firestore) {
       this.firestore
@@ -83,7 +85,7 @@ export default class Login {
         type: user.type,
         name: user.email.split('@')[0] 
       })
-      .then(() => console.log(`User with ${user.email} is created`))
+      // .then(() => console.log(`User with ${user.email} is created`))
       .catch(error => error)
     } else {
       return null

@@ -16,7 +16,9 @@ export const filteredBills = (data, status) => {
         selectCondition = (bill.status === status)
       } else {
         // in prod environment
+        /* istanbul ignore next */
         const userEmail = JSON.parse(localStorage.getItem("user")).email
+        /* istanbul ignore next */
         selectCondition =
           (bill.status === status) &&
           [...USERS_TEST, userEmail].includes(bill.email)
@@ -153,6 +155,7 @@ export default class {
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   getBillsAllUsers = () => {
     if (this.firestore) {
       return this.firestore
@@ -173,6 +176,7 @@ export default class {
   }
     
   // not need to cover this function by tests
+  /* istanbul ignore next */
   updateBill = (bill) => {
     if (this.firestore) {
     return this.firestore

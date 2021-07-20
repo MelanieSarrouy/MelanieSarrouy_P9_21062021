@@ -7,6 +7,7 @@ import userEvent from '@testing-library/user-event'
 import { ROUTES } from "../constants/routes"
 import firebase from "../__mocks__/firebase.js"
 
+
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 window.localStorage.setItem('user', JSON.stringify({
   type: 'Employee'

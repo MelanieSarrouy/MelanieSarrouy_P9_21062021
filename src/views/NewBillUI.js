@@ -15,7 +15,7 @@ export default () => {
                 <div class="col-md-6">
                   <div class="col-half">
                     <label for="expense-type" class="bold-label">Type de dépense</label>
-                      <select required class="form-control blue-border" data-testid="expense-type">
+                      <select class="form-control blue-border" data-testid="expense-type">
                         <option>Transports</option>
                         <option>Restaurants et bars</option>
                         <option>Hôtel et logement</option>
@@ -27,7 +27,7 @@ export default () => {
                   </div>
                   <div class="col-half">
                     <label for="expense-name" class="bold-label">Nom de la dépense</label>
-                    <input type="text" class="form-control blue-border" data-testid="expense-name" placeholder="Vol Paris Londres" />
+                    <input required type="text" class="form-control blue-border" data-testid="expense-name" placeholder="Vol Paris Londres" />
                   </div>
                   <div class="col-half">
                     <label for="datepicker" class="bold-label">Date</label>
@@ -44,7 +44,7 @@ export default () => {
                     </div>
                     <div class="flex-col">
                       <label for="pct" class="white-text">%</label>
-                      <input required type="number" class="form-control blue-border" data-testid="pct" placeholder="20 %" />
+                      <input type="number" class="form-control blue-border" data-testid="pct" placeholder="20 %" />
                     </div>
                   </div>
                 </div>
@@ -56,6 +56,7 @@ export default () => {
                   <div class="col-half" id="input-file">
                     <label for="file" class="bold-label">Justificatif</label>
                     <input required type="file" class="form-control blue-border" accept="image/*, .jpg, .jpeg, .png" data-testid="file" />
+                    <p id="fileError" class="fileError" style="color: red">format de fichier non valide</br>Accepté : <span class="italique">jpeg</span>, <span class="italique">jpeg</span> ou <span class="italique">png</span></P>
                   </div>
                 </div>
             </div>
