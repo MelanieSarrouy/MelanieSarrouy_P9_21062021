@@ -4,14 +4,21 @@ import { bills } from "../fixtures/bills.js"
 import { localStorageMock } from "../__mocks__/localStorage.js"
 import Bills from "../containers/Bills.js"
 import userEvent from '@testing-library/user-event'
-import { ROUTES } from "../constants/routes"
+import { ROUTES, ROUTES_PATH } from "../constants/routes"
 import firebase from "../__mocks__/firebase.js"
+import Firestore from "../app/Firestore.js"
+import Router from "../app/Router.js"
 
 
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 window.localStorage.setItem('user', JSON.stringify({
   type: 'Employee'
 }))
+
+const onNavigate = (pathname) => {
+  document.body.innerHTML = ROUTES({ pathname })
+}
+
 
 describe("Given I am connected as an employee", () => {
   describe("When Bills page is called", () => {
@@ -32,12 +39,21 @@ describe("Given I am connected as an employee", () => {
       expect(screen.getAllByText("Loading...")).toBeTruthy();
     })
   })
+  // 
   describe("When I am on Bills Page", () => {
-    test("Then bill icon in vertical layout should be highlighted", () => {
-      const html = BillsUI({ data: []})
-      document.body.innerHTML = html
-      //to-do write expect expression
+    test("Then bills icon in vertical layout should be highlighted", () => {
+
+      document.body.innerHTML = `<div id="root"></div>`;
+      const pathname = ROUTES_PATH['Bills']
+      Object.defineProperty(window, 'location', { value: { hash: pathname } })
+
+// this.store.collection is not a function
+
+      Router()
+      const icon = screen.getByTestId('icon-window')
+      expect(icon.classList.contains('active-icon')).toBeTruthy() 
     })
+    
     test("Then bills should be ordered from earliest to latest", () => {
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -48,9 +64,6 @@ describe("Given I am connected as an employee", () => {
   })
   describe('When I am on Bills page and I click on New Bill button', () => {
     test('Then, function handleClickNewBill have to be called', () => {
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })          
@@ -64,9 +77,6 @@ describe("Given I am connected as an employee", () => {
       expect(handleClickNewBill).toHaveBeenCalled()
     })
     test('Then, form should be displayed', () => {
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })          
@@ -84,9 +94,6 @@ describe("Given I am connected as an employee", () => {
 
   describe('When I am on Bills page and I click on Icon Eye button', () => {
     test('Then, function handleClickIconEye have to be called', () => {
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })          
@@ -103,9 +110,6 @@ describe("Given I am connected as an employee", () => {
     })
 
     test('Then, A modal should open', () => {
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })
@@ -126,12 +130,8 @@ describe("Given I am connected as an employee", () => {
 
     })
     test('Then, image source attribute is the same as icon data-bill-url attribute', () => {
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      const firestore = null
       const bill = new Bills({
-        document, onNavigate, firestore, bills, localStorage: window.localStorage
+        document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -148,12 +148,8 @@ describe("Given I am connected as an employee", () => {
       expect(billUrl).toEqual(imgSrc)
     })
     test('Then, data-bill-url attribute is null modal should open with a message', () => {
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      const firestore = null
       const bill = new Bills({
-        document, onNavigate, firestore, bills, localStorage: window.localStorage
+        document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -203,7 +199,7 @@ describe("Given I am a user connected as an Employee", () => {
       const message = await screen.getByText(/Erreur 404/)
       expect(message).toBeTruthy()
     })
-    test("fetches messages from an API and fails with 500 message error", async () => {
+    test("fetches bills from an API and fails with 500 message error", async () => {
       firebase.get.mockImplementationOnce(() =>
         Promise.reject(new Error("Erreur 500"))
       )

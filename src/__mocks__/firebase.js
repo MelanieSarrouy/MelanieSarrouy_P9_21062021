@@ -1,3 +1,5 @@
+import firebase from "./firebase"
+
 export default {
   get: () => {
     return Promise.resolve({
@@ -61,6 +63,28 @@ export default {
         "type": "Restaurants et bars",
         "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=4df6ed2c-12c8-42a2-b013-346c1346f732"
       }]
+    })
+  },
+  post: async (newBill) => {
+    const bills = await firebase.get()
+    return Promise.resolve({
+      data: [
+        ...bills.data,
+        {
+          id: newBill.id,
+          vat: newBill.vat,
+          amount: newBill.amount,
+          fileName: newBill.fileName,
+          commentary: newBill.commentary,
+          pct: newBill.pct,
+          type: newBill.type,
+          email: newBill.email,
+          fileUrl: newBill.fileUrl,
+          date: newBill.date,
+          status: newBill.pstatusct,
+          commentAdmin: newBill.commentAdmin
+        }
+      ]
     })
   }
 }
