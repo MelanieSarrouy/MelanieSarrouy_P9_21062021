@@ -6,9 +6,8 @@ import Bills from "../containers/Bills.js"
 import userEvent from '@testing-library/user-event'
 import { ROUTES, ROUTES_PATH } from "../constants/routes"
 import firebase from "../__mocks__/firebase.js"
-import Firestore from "../app/Firestore.js"
+import firestore from "../app/Firestore.js"
 import Router from "../app/Router.js"
-
 
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 window.localStorage.setItem('user', JSON.stringify({
@@ -39,21 +38,23 @@ describe("Given I am connected as an employee", () => {
       expect(screen.getAllByText("Loading...")).toBeTruthy();
     })
   })
-  // 
   describe("When I am on Bills Page", () => {
     test("Then bills icon in vertical layout should be highlighted", () => {
-
-      document.body.innerHTML = `<div id="root"></div>`;
-      const pathname = ROUTES_PATH['Bills']
-      Object.defineProperty(window, 'location', { value: { hash: pathname } })
-
-// this.store.collection is not a function
-
+      firestore.bills = () => ({ 
+        get: jest
+          .fn()
+          .mockResolvedValueOnce(bi => bi(bills)) 
+      })
+      Object.defineProperty(window, 'location', { value: { hash: ROUTES_PATH['Bills'] } })
+      document.body.innerHTML = `<div id="root"></div>`
       Router()
-      const icon = screen.getByTestId('icon-window')
-      expect(icon.classList.contains('active-icon')).toBeTruthy() 
+      const iconWindow = screen.getByTestId('icon-window')
+      expect(iconWindow).toBeTruthy()
+      expect(iconWindow.classList).toContain('active-icon')
+      const iconMail = screen.getByTestId('icon-mail')
+      expect(iconMail).toBeTruthy()
+      expect(iconMail.classList).not.toContain('active-icon')
     })
-    
     test("Then bills should be ordered from earliest to latest", () => {
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html

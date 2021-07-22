@@ -95,12 +95,14 @@ describe("Given I am connected as an employee", () => {
       const firestore = {
         storage: {
           ref: jest.fn(() => {
-            return {
-              put: jest.fn(() => Promise.resolve({ ref: { getDownloadURL: jest.fn(() => "") } })),
+            return { 
+              put: jest
+                .fn()
+                .mockResolvedValueOnce({ ref: { getDownloadURL: jest.fn() } })
             }
-          }),
-        },
-      }
+          })
+        }        
+      } 
       const newBill = new NewBill({
         document, onNavigate, firestore, localStorage: window.localStorage
       })          
