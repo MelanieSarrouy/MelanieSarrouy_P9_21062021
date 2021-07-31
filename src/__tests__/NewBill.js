@@ -13,6 +13,7 @@ window.localStorage.setItem('user', JSON.stringify({
   type: 'Employee'
 }))
 
+// Test affichage du formulaire
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     test("Then, form should be displayed", () => {
@@ -21,6 +22,7 @@ describe("Given I am connected as an employee", () => {
       expect(screen.getAllByText("Envoyer une note de frais")).toBeTruthy()
     })
   })
+  // Test function handleSubmit
   describe("When I am on NewBill Page and I click on Submit button", () => {
     test("Then, function handleSubmit have to be called", () => {
       const onNavigate = (pathname) => {
@@ -40,6 +42,7 @@ describe("Given I am connected as an employee", () => {
       expect(handleSubmit).toHaveBeenCalled()
     })
   })
+  // Test function handleChangeFile
   describe("When I am on NewBill Page and I click on Choose File button", () => {
     test("Then, function handleChangeFile have to be called", () => {
       const onNavigate = (pathname) => {
@@ -63,6 +66,7 @@ describe("Given I am connected as an employee", () => {
       expect(handleChangeFile).toBeCalled()
     })
   })
+  // Test upload fichier avec mauvaise extension
   describe("When I am on NewBill  Page and I add a file with wrong extension", () => {
     test("Then, error message should be displayed", () => {
       const onNavigate = (pathname) => {
@@ -87,6 +91,7 @@ describe("Given I am connected as an employee", () => {
       expect(theLast.style.display).toEqual('block')
     })
   })
+  // Test upload fichier avec bonne extension
   describe("When I am on NewBill  Page and I add a file with good extension", () => {
     test("Then, error message should be not displayed", () => {
       const onNavigate = (pathname) => {
@@ -123,7 +128,7 @@ describe("Given I am connected as an employee", () => {
       expect(theLast.style.display).toBe('none')
     })
   })
-
+  // Test function createBill
   describe("When I am on NewBill Page, I fill the form correctly and I click on submit button ", () => {
     test("Then, function createBill have to be called", () => {
       const onNavigate = (pathname) => {
@@ -171,9 +176,7 @@ describe("Given I am connected as an employee", () => {
   })
 })
 
-
 // test d'intégration POST New Bill // ________________________
-
 describe("Given I am a user connected as an Employee", () => {
   describe("When I submit form", () => {
     test("Add new bill from mock API POST", async () => {

@@ -9,6 +9,7 @@ import firebase from "../__mocks__/firebase.js"
 import firestore from "../app/Firestore.js"
 import Router from "../app/Router.js"
 
+
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 window.localStorage.setItem('user', JSON.stringify({
   type: 'Employee'
@@ -17,27 +18,29 @@ window.localStorage.setItem('user', JSON.stringify({
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname })
 }
-
-
+// Test affichage page Bills
 describe("Given I am connected as an employee", () => {
   describe("When Bills page is called", () => {
     test("Then, Bills Page should be displayed", () => {
       document.body.innerHTML = BillsUI({ data: bills })
-      expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
+      expect(screen.getAllByText("Mes notes de frais")).toBeTruthy()
     })
   })
+  // Test affichage page d'erreur
   describe("When Bills page is loading, there is an error", () => {
     test("Then, Error page should be displayed", () => {
       document.body.innerHTML = BillsUI({ error: true })
-      expect(screen.getAllByText("Erreur")).toBeTruthy();
+      expect(screen.getAllByText("Erreur")).toBeTruthy()
     })
   })
+  // Test affichage page de chargement
   describe("When Bills page is loading", () => {
     test("Then, Loading page should be displayed", () => {
       document.body.innerHTML = BillsUI({ loading: true })
-      expect(screen.getAllByText("Loading...")).toBeTruthy();
+      expect(screen.getAllByText("Loading...")).toBeTruthy()
     })
   })
+  // Test surbrillance icone Bills
   describe("When I am on Bills Page", () => {
     test("Then bills icon in vertical layout should be highlighted", () => {
       firestore.bills = () => ({ 
@@ -55,6 +58,7 @@ describe("Given I am connected as an employee", () => {
       expect(iconMail).toBeTruthy()
       expect(iconMail.classList).not.toContain('active-icon')
     })
+    // Test affichage page Bills
     test("Then bills should be ordered from earliest to latest", () => {
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -63,6 +67,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
   })
+  // Test function handleClickNewBill
   describe('When I am on Bills page and I click on New Bill button', () => {
     test('Then, function handleClickNewBill have to be called', () => {
       const bill = new Bills({
@@ -77,6 +82,7 @@ describe("Given I am connected as an employee", () => {
       userEvent.click(button)
       expect(handleClickNewBill).toHaveBeenCalled()
     })
+    // Test affichage du formulaire
     test('Then, form should be displayed', () => {
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
@@ -92,7 +98,7 @@ describe("Given I am connected as an employee", () => {
       expect(title).toBeTruthy()
     })
   })
-
+  // Test function handleClickIconEye
   describe('When I am on Bills page and I click on Icon Eye button', () => {
     test('Then, function handleClickIconEye have to be called', () => {
       const bill = new Bills({
@@ -104,12 +110,14 @@ describe("Given I am connected as an employee", () => {
       $.fn.modal = jest.fn()
 
       const iconEye = screen.getAllByTestId("icon-eye")[0]
-      const handleClickIconEye = jest.fn(() => bill.handleClickIconEye(iconEye)) 
+      const handleClickIconEye = jest.fn(() => {bill.handleClickIconEye(iconEye)}) 
       iconEye.addEventListener('click', handleClickIconEye)
       userEvent.click(iconEye)
       expect(handleClickIconEye).toBeCalled()
     })
-
+  })
+  // Test ouverture de la modale
+  describe('When I am on Bills page and I click on Icon Eye button', () => {
     test('Then, A modal should open', () => {
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
@@ -128,8 +136,8 @@ describe("Given I am connected as an employee", () => {
       const displayModale = modale.getAttribute('style')
       expect(modale).toBeTruthy()
       expect(displayModale).not.toBe("display: none;")
-
     })
+    // Test concordances des attributs 
     test('Then, image source attribute is the same as icon data-bill-url attribute', () => {
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
@@ -148,6 +156,7 @@ describe("Given I am connected as an employee", () => {
       const imgSrc = img.getAttribute("src")
       expect(billUrl).toEqual(imgSrc)
     })
+    // Test message dans la modale si attibut null
     test('Then, data-bill-url attribute is null modal should open with a message', () => {
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
@@ -164,6 +173,7 @@ describe("Given I am connected as an employee", () => {
       expect(screen.getAllByText("Aucun justificatif fourni")).toBeTruthy()
     })
   })
+  // Test absance d'icone eye si absence de bills
   describe("When I am on Bills Page and there is no bills", () => {
     test("Then there isn't any Icon Eye button", () => {
       const html = BillsUI({ data: [] });
@@ -174,7 +184,7 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
-
+// fonction de tri des dates
 function tri(a,b) {
   let dateA = new Date(a)
   let dateB = new Date(b)
@@ -182,7 +192,6 @@ function tri(a,b) {
 }
 
 // test d'intégration GET Bills // ________________________
-
 describe("Given I am a user connected as an Employee", () => {
   describe("When I navigate on Bills page", () => {
     test("fetches bills from mock API GET", async () => {

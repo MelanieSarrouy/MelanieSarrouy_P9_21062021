@@ -33,8 +33,6 @@ export default class NewBill {
         .then(url => {
           this.fileUrl = url
           this.fileName = fileName
-          console.log(this.fileUrl)
-
         })
     } else { 
       theLast.style.display = 'block'
