@@ -81,7 +81,7 @@ export default {
           email: newBill.email,
           fileUrl: newBill.fileUrl,
           date: newBill.date,
-          status: newBill.pstatusct,
+          status: newBill.status,
           commentAdmin: newBill.commentAdmin
         }
       ]
